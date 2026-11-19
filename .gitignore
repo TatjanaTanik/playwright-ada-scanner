@@ -224,3 +224,6 @@ __marimo__/
 
 # PyCharm settings (personal, not part of the project)
 .idea/
+
+# Playwright recordings: screenshots, videos, traces
+test-results/
