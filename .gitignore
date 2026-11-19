@@ -221,3 +221,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# PyCharm settings (personal, not part of the project)
+.idea/
