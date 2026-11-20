@@ -1,16 +1,6 @@
 from dataclasses import dataclass, field
 
-# WCAG 2.0 / 2.1 / 2.2, levels A and AA
-WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"]
-
-# Optional: WCAG 2.0 AAA (axe has no AAA tags for 2.1 and 2.2)
-AAA_TAG = "wcag2aaa"
-
-# Optional: axe rules that are good practice but not required by WCAG
-BEST_PRACTICE_TAG = "best-practice"
-
-ALLOWED_IMPACTS = ["critical", "serious", "moderate", "minor"]
-DEFAULT_FAIL_ON = ["critical", "serious", "moderate"]
+from scanner.constants import *
 
 
 @dataclass

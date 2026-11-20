@@ -1,6 +1,7 @@
 # Integration tests: our scanner against real public W3C example pages (needs internet)
 
-from scanner.scan import MODAL_SELECTOR, find_open_modal, scan
+from scanner.scan import find_open_modal, scan
+from scanner.constants import *
 
 # W3C "bad" demo page: an ordinary page with no modals at all
 NO_MODAL_PAGE = "https://www.w3.org/WAI/demos/bad/before/home.html"

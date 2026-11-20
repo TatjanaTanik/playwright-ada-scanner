@@ -3,10 +3,8 @@ from dataclasses import dataclass
 
 from axe_playwright_python.sync_playwright import Axe
 
-from scanner.config import BEST_PRACTICE_TAG, DEFAULT_FAIL_ON, ScanConfig
-
-# modals: ARIA dialogs and the native <dialog> element
-MODAL_SELECTOR = '[role="dialog"], [role="alertdialog"], [aria-modal="true"], dialog[open]'
+from scanner.config import ScanConfig
+from scanner.constants import *
 
 
 def is_best_practice(violation):

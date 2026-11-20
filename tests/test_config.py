@@ -1,7 +1,8 @@
 # Unit tests for ScanConfig: fast checks, no browser needed
 
 import pytest
-from scanner.config import AAA_TAG,BEST_PRACTICE_TAG, WCAG_TAGS, ScanConfig
+from scanner.constants import *
+from scanner.config import ScanConfig
 
 def test_default_settings():
     # Arrange: a config with no values, uses default
