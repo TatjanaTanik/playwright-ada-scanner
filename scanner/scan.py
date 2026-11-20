@@ -50,7 +50,7 @@ class ScanResult:
         blocking = self.blocking
         return [v for v in self.violations if v not in blocking]
 
-def scan(page, name, fail_on=None, include_aaa=False, include_best_practice=False):
+def scan(page, name, modal=False, fail_on=None, include_aaa=False, include_best_practice=False):
     # Settings for this one scan; no fail_on given means the defaults
     if fail_on is None:
         fail_on = DEFAULT_FAIL_ON
@@ -58,8 +58,24 @@ def scan(page, name, fail_on=None, include_aaa=False, include_best_practice=Fals
     # Tell axe to run only the rules for chosen WCAG levels
     options = {"runOnly": {"type": "tag", "values": config.axe_tags()}}
 
-    # Whole page: no context given, so axe scans everything on the page
-    response = Axe().run(page, options=options).response
-
-    # Pack everything into one result the test can check
-    return ScanResult(name=name, url=page.url, target="page", config=config, violations=response["violations"])
+    if not modal:
+        # Whole page: no context given, so axe scans everything on the page
+        response = Axe().run(page, options=options).response
+        target = "page"
+    else:
+        # Find open modal
+        open_modal = find_open_modal(page)
+        if open_modal is None:
+            # None is open
+            raise AssertionError(f"{name}: modal=True but no open modal found on {page.url}")
+        # Marking the modal so the axe could find it with CSS selector
+        open_modal.evaluate(f"element => element.setAttribute('{SCAN_TARGET_ATTRIBUTE}', '')")
+        try:
+            # scans only inside the element with the sticker
+            response = Axe().run(page, context=f"[{SCAN_TARGET_ATTRIBUTE}]", options=options).response
+        finally:
+            # Removing the sticker
+            open_modal.evaluate(f"element => element.removeAttribute('{SCAN_TARGET_ATTRIBUTE}', '')")
+        target = "modal"
+    # Result record the test can check
+    return ScanResult(name=name, url=page.url, target=target, config=config, violations=response["violations"])

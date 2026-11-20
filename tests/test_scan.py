@@ -1,4 +1,5 @@
 # Integration tests: our scanner against real public W3C example pages (needs internet)
+import pytest
 
 from scanner.scan import find_open_modal, scan
 from scanner.constants import *
@@ -58,4 +59,24 @@ def test_scan_whole_page_finds_violations(page):
     assert result.target == "page"
     assert result.url == NO_MODAL_PAGE
     assert len(result.violations) > 0
+
+def test_scan_modal_scans_only_the_open_modal(page):
+    # Arrange: open the W3C example page and click the button that opens the modal
+    page.goto(MODAL_EXAMPLE_PAGE)
+    page.get_by_role("button", name=OPEN_MODAL_BUTTON).click()
+
+    # scans only open modal
+    result = scan(page, "Add Delivery Address modal", modal=True)
+
+    # Assert: the modal was scanned, and sticker is off
+    assert result.target == "modal"
+    assert page.locator(f"[{SCAN_TARGET_ATTRIBUTE}]").count() == 0
+
+def test_modal_true_without_open_modal_fails_clearly(page):
+    # Arrange: the example page with no open modal
+    page.goto(MODAL_EXAMPLE_PAGE)
+
+    # Assert: asking for a modal that isn't open stops with our clear message
+    with pytest.raises(AssertionError, match="no open modal"):
+            scan(page, "Missing modal", modal=True)
 
